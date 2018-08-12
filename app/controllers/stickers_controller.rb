@@ -28,7 +28,7 @@ class StickersController < ApplicationController
 
   def censor_check(token, query)
     puts "Query ready for the censor check"
-    puts query
+    query.gsub!(' ', '+')
     params = { "content": query }.to_json
 
     raw_res = RestClient.post("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=#{token}", params, {content_type: 'application/json', accept: 'application/json'})
