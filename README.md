@@ -30,3 +30,8 @@ Other things:
 * Ruby 2.4.4
 * Rails 5.2.1
 * Gem source used in gem file is 'https://ruby.taobao.org/' - change that if you’re not in China! 
+
+Made by:
+Jake https://github.com/JakeTompkins
+Dan https://github.com/dengel29/
+Grace https://github.com/yaycake
