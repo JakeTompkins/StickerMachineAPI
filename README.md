@@ -31,7 +31,7 @@ Other things:
 * Rails 5.2.1
 * Gem source used in gem file is 'https://ruby.taobao.org/' - change that if you’re not in China! 
 
-Made by:
+### Made by:
 * Dan https://github.com/dengel29
 * Grace https://github.com/yaycake
 * Jake https://github.com/JakeTompkins
