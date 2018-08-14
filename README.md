@@ -13,7 +13,9 @@ More details on those specs below. To visit the code for the associated miniprog
   
 ### Specs
 -> Filters out stickers larger than .4 MB to ensure users can save every incoming gif to their sticker collection in WeChat
+
 -> Triggers Tencent’s “message security check” aka censorship API in order to comply with Chinese standards of harmony :eyeroll:
+
 -> Filters incoming gifs by the “pg-13” parameter supplied by Giphy API, for harmony
 
 ### I want to try it!
