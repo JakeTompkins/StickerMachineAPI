@@ -1,5 +1,5 @@
 class StickersController < ApplicationController
-  BASE_URL = "http://api.giphy.com/v1/gifs/search?q="
+  BASE_URL = "http://api.giphy.com/v1/gifs/search?limit=100&q="
   TRENDING_BASE = "http://api.giphy.com/v1/gifs/trending?"
   API_KEY = ENV["giphy_api_key"]
   SUFFIX = "&api_key=#{API_KEY}&limit=80&rating=pg-13"
