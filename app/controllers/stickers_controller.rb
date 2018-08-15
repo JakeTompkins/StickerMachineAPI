@@ -5,14 +5,13 @@ class StickersController < ApplicationController
 
     if params[:query]
       query = clean_query_input(params[:query])
-      stickers = sg.get_query_stickers(query: query, page_num: params[:page_num])
+      p "CLEANED: #{query}"
+      @stickers = sg.get_query_stickers(query: query, page_num: params[:page_num])
     else
-      stickers = sg.get_trending_stickers(params[:page_num])
+      @stickers = sg.get_trending_stickers(params[:page_num])
     end
 
-    if stickers.size > 0
-      stickers.reject!{ |s| s["images"]["original"]["size"].to_i >= 400000 }
-      @stickers = stickers
+    if @stickers
       render :get_stickers
     else
       render json: {
@@ -24,6 +23,6 @@ class StickersController < ApplicationController
   private
 
   def clean_query_input(query)
-    return query.downcase.scan(/w+/).join("+")
+    return query.downcase.scan(/\w+/).join("+")
   end
 end

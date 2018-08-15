@@ -1,28 +1,48 @@
 class Cacher
     def initialize()
-        @r = Redis.new(ENV["REDIS_URL"])
+        @r = Redis.new(url: ENV["REDIS_URL"])
     end
 
     def set(parameters)
-        # Convert value to array if hash
-        if parameters[:value].is_a?(Hash)
-            hash = parameters[:value]
-            array = hash.to_a
-        end
-        @r.set(parameters[:key], array)
+        @r.set(parameters[:key], parameters[:value])
     end
 
-    def get(key)
-        @r.get(key)
+    def get_token
+        @r.get("cached_token")
     end
 
-    def add(parameters)
-        if parameters[:value].is_a?(Hash)
-            hash = parameters[:value]
-            array = hash.to_a
-        end
-        cached = (get(parameters[:key]) || [])
-        cached += (array || parameters[:value])
-        set(key: parameters[:key], value: cached)
+    def get_stickers(key)
+        return [] if @r.get(key).nil?
+        JSON.parse(@r.get(key))
+    end
+
+    def get_censored
+        return [] if @r.get("censored_quereis").nil?
+        JSON.parse(@r.get("censored_queries"))
+    end
+
+    def add_stickers(parameters)
+        query = parameters[:key]
+        stickers = parameters[:stickers]
+
+        p "ADD STICKERS #{stickers.size}"
+
+        cached_stickers = get_stickers(query)
+
+        p "CACHED_STICKERS #{cached_stickers.size}, QUERY: #{query}"
+        cached_stickers += stickers
+
+        cached_stickers = JSON.generate(cached_stickers)
+
+        set(key:query, value: cached_stickers)
+    end
+
+    def add_censored(query)
+        cached_censored = get_censored
+        cached_censored.push(query)
+
+        cached_censored = JSON.generate(cached_censored)
+
+        set(key: "censored_queries", value: cached_censored)
     end
 end
