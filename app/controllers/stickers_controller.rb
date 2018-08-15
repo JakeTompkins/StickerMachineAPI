@@ -4,9 +4,10 @@ class StickersController < ApplicationController
     sg = StickerGetter.new()
 
     if params[:query]
-      stickers = sg.get_query(query: params[:query], page_num: params[:page_num])
+      query = clean_query_input(params[:query])
+      stickers = sg.get_query_stickers(query: query, page_num: params[:page_num])
     else
-      stickers = sg.get_trending(params[:page_num])
+      stickers = sg.get_trending_stickers(params[:page_num])
     end
 
     if stickers.size > 0
@@ -18,5 +19,11 @@ class StickersController < ApplicationController
         error: "No stickers"
       }
     end
+  end
+
+  private
+
+  def clean_query_input(query)
+    return query.downcase.scan(/w+/).join("+")
   end
 end
