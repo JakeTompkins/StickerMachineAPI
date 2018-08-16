@@ -5,6 +5,7 @@ class Cacher
 
     def set(parameters)
         @r.set(parameters[:key], parameters[:value])
+        @r.expire(parameters[:key], 86400) unless parameters[:key] == "censored_queries"
     end
 
     def get_token
@@ -17,7 +18,7 @@ class Cacher
     end
 
     def get_censored
-        return [] if @r.get("censored_quereis").nil?
+        return [] if @r.get("censored_queries").nil?
         JSON.parse(@r.get("censored_queries"))
     end
 

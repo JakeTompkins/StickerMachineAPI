@@ -23,6 +23,6 @@ class StickersController < ApplicationController
   private
 
   def clean_query_input(query)
-    return query.downcase.scan(/[^\s]/).join("+")
+    return query.downcase.scan(/\S+/).join("+")
   end
 end
