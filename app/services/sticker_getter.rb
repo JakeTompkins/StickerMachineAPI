@@ -14,15 +14,7 @@ class StickerGetter
     @cacher = Cacher.new
   end
 
-
-
-
-
-
-
-
   def get_query_stickers(parameters)
-
     # Retrieve Access token
     access_token = get_access_token
 
@@ -30,7 +22,7 @@ class StickerGetter
     page_num = parameters[:page_num]
     query = parameters[:query]
     query = censor_check(access_token, query)
-    
+
     # Combine query and page_num for accessing cache
     cache_key = "#{query}&#{page_num}"
 
@@ -39,6 +31,7 @@ class StickerGetter
     p "CACHED_RESULTS #{cached_results.size}, QUERY: #{cache_key}"
     return cached_results unless cached_results.empty?
 
+    # Get results from giffy
     url = QUERY_BASE + query + SUFFIX + PAGE_NUM + page_num
 
     options = {
@@ -50,8 +43,10 @@ class StickerGetter
     res = JSON.parse(raw_res)
     stickers = res['data']
 
+    # If no stickers match the query/page_num
     return false if stickers.empty?
 
+    # Reject stickers that are too big
     filter_stickers!(stickers)
 
     # Add stickers to cache
@@ -60,17 +55,12 @@ class StickerGetter
     stickers
   end
 
-
-
-
-
-
-
-
   def get_trending_stickers(page_num)
+    # Get cached stickers if they exist
     cached_results = @cacher.get_stickers("trending&#{page_num}")
     return cached_results unless cached_results.empty?
 
+    # Get results from giffy
     url = TRENDING_BASE + SUFFIX + PAGE_NUM + page_num
     options = {
       url: url,
@@ -80,6 +70,7 @@ class StickerGetter
     res = JSON.parse(raw_res)
     stickers = res['data']
 
+    # Reject stickers that are too big
     filter_stickers!(stickers)
 
     # Add stickers to cache
@@ -87,13 +78,6 @@ class StickerGetter
 
     stickers
   end
-
-
-
-
-
-
-
 
   private
 
@@ -120,22 +104,16 @@ class StickerGetter
     # Cache new token
     @cacher.set(key: 'cached_token', value: access_token)
     access_token
-    end
-
-
-
-
-
-
-
+  end
 
   def censor_check(token, query)
     puts "Query #{query} ready for the censor check"
 
-    # Check if query is censored
+    # Check if query is already in cached list
     censored = @cacher.get_censored
     return 'panda' if censored.include?(query)
 
+    # Call api
     params = { "content": query }.to_json
 
     raw_res = RestClient.post("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=#{token}", params, content_type: 'application/json', accept: 'application/json')
@@ -162,20 +140,15 @@ class StickerGetter
       return query
 
     elsif res['errcode'] == 42_001
+      # IF token expired, clear cache, get a new one, try again
       @cacher.set(key: 'cached_token', value: '')
       token = get_access_token
       censor_check(token, query)
     end
   end
 
-
-
-
-
-
-
-
   def filter_stickers!(stickers)
+    # Reject stickers larger than WeChat's limit
     stickers.reject! { |s| s['images']['original']['size'].to_i >= 400_000 }
   end
 end
