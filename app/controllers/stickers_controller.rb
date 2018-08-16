@@ -1,5 +1,4 @@
 class StickersController < ApplicationController
-
   def get_stickers
     sg = StickerGetter.new()
 
