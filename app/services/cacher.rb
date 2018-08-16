@@ -13,7 +13,7 @@ class Cacher
 
     def get_token
         # Return token stored in cache
-        @r.get("cached_token")
+        @r.get("cached_token") || ""
     end
 
     def get_stickers(key)
