@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 QUERY_BASE = 'http://api.giphy.com/v1/gifs/search?q='
 TRENDING_BASE = 'http://api.giphy.com/v1/gifs/trending?'
 API_KEY = ENV['giphy_api_key']
@@ -18,41 +17,89 @@ class StickerGetter
     # Retrieve Access token
     access_token = get_access_token
 
+
     # Check if query term is censored in China
     page_num = parameters[:page_num]
     query = parameters[:query]
-    query = censor_check(access_token, query)
 
-    # Combine query and page_num for accessing cache
-    cache_key = "#{query}&#{page_num}"
+    # if Chinese, do the following:
+    # 1) the censor check,
+    # 2) check for cached,
+    # 3) encode for the URI,
+    # 4) make the query with the right language param
+    if query =~ /\p{Han}/
+      puts "-=-=-=-=-=-=-=-=-"
+      puts "This here is chaaaanese"
+      lang = '&lang=zh-CN'
 
-    # Return cached results if sufficient
-    cached_results = @cacher.get_stickers(cache_key)
-    p "CACHED_RESULTS #{cached_results.size}, QUERY: #{cache_key}"
-    return cached_results unless cached_results.empty?
 
-    # Get results from giffy
-    url = QUERY_BASE + query + SUFFIX + PAGE_NUM + page_num
+      # if passes censor check, check the language and change the lang param
+      query = censor_check(access_token, query)
 
-    options = {
-      url: url,
-      method: :get
-    }
 
-    raw_res = RestClient::Request.execute(options)
-    res = JSON.parse(raw_res)
-    stickers = res['data']
 
-    # If no stickers match the query/page_num
-    return false if stickers.empty?
+      # Combine query and page_num for accessing cache
+      cache_key = "#{query}&#{page_num}"
 
-    # Reject stickers that are too big
-    filter_stickers!(stickers)
+      # Return cached results if sufficient
+      cached_results = @cacher.get_stickers(cache_key)
+      p "CACHED_RESULTS #{cached_results.size}, QUERY: #{cache_key}"
+      return cached_results unless cached_results.empty?
 
-    # Add stickers to cache
-    @cacher.add_stickers(key: cache_key, stickers: stickers)
+      # Get results from giffy
+      query = URI.encode(query)
+      url = QUERY_BASE + query + SUFFIX + PAGE_NUM + page_num + lang
 
-    stickers
+      options = {
+        url: url,
+        method: :get
+      }
+
+      raw_res = RestClient::Request.execute(options)
+      res = JSON.parse(raw_res)
+      stickers = res['data']
+
+      # If no stickers match the query/page_num
+      return false if stickers.empty?
+
+      # Reject stickers that are too big
+      filter_stickers!(stickers)
+
+      # Add stickers to cache
+      @cacher.add_stickers(key: cache_key, stickers: stickers)
+
+      stickers
+
+    else
+      cache_key = "#{query}&#{page_num}"
+
+      # Return cached results if sufficient
+      cached_results = @cacher.get_stickers(cache_key)
+      p "CACHED_RESULTS #{cached_results.size}, QUERY: #{cache_key}"
+      return cached_results unless cached_results.empty?
+
+      url = QUERY_BASE + query + SUFFIX + PAGE_NUM + page_num
+
+      options = {
+        url: url,
+        method: :get
+      }
+
+      raw_res = RestClient::Request.execute(options)
+      res = JSON.parse(raw_res)
+      stickers = res['data']
+
+      # If no stickers match the query/page_num
+      return false if stickers.empty?
+
+      # Reject stickers that are too big
+      filter_stickers!(stickers)
+
+      # Add stickers to cache
+      @cacher.add_stickers(key: cache_key, stickers: stickers)
+
+      stickers
+    end
   end
 
   def get_trending_stickers(page_num)
