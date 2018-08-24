@@ -1,4 +1,4 @@
-source 'gems.ruby-china.com'
+source 'http://gems.ruby-china.com'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.4.4'
