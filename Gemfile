@@ -13,6 +13,9 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+gem 'sqlite3', '~> 1.3.6'
+
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -21,6 +24,10 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'figaro'
 gem 'rest-client'
 gem 'redis'
+
+# Token authentication
+gem 'devise'
+gem 'simple_token_authentication', '~> 1.0'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
