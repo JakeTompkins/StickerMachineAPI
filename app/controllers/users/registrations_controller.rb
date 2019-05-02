@@ -37,12 +37,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def user_params(code)
     return @user_params if @user_params
-
     @user_params = set_params
-
     # GET both openid and session_key
-    @user_params['email'] = "tbd@stickermachine.cool"
-    @user_params['password'] = "stickermachine-is-cool"
+    @user_params['email'] = 'tbd@stickermachine.cool'
+    @user_params['password'] = 'secret123'
     @user_params['open_id'] = open_id(code)
     @user_params['encrypted_password'] = Devise.friendly_token
     @user_params['authentication_token'] = Devise.friendly_token
@@ -54,32 +52,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     params.permit(:nickname)
   end
 
-
-
-  # GET /resource/sign_up
-  # def new
-  #   super
-  # end
-
-  # POST /resource
-  # def create
-  #   super
-  # end
-
-  # GET /resource/edit
-  # def edit
-  #   super
-  # end
-
-  # PUT /resource
-  # def update
-  #   super
-  # end
-
-  # DELETE /resource
-  # def destroy
-  #   super
-  # end
 
   # GET /resource/cancel
   # Forces the session data which is usually expired after sign

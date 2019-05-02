@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_02_014721) do
+ActiveRecord::Schema.define(version: 2019_05_01_133632) do
 
   create_table "users", force: :cascade do |t|
     t.string "encrypted_password", default: "", null: false
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_014721) do
     t.datetime "updated_at", null: false
     t.string "open_id"
     t.string "authentication_token", limit: 30
+    t.string "email"
     t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["open_id"], name: "index_users_on_open_id", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
