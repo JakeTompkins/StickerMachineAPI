@@ -23,6 +23,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       secret: ENV['wechat_app_secret'],
       js_code: code,
       grant_type: 'authorization_code' }
+      
     response = RestClient.post(url, wechat_params)
 
     p JSON.parse(response.body)
