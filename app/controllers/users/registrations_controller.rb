@@ -8,7 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     code = params[:code]
-    @user = User.find_by_open_id(open_id(code)) || User.create!(user_params(code))
+    @user = User.find_by_email(wechat_email(code)) || User.create!(user_params(code))
     render json: @user
   end
 
@@ -35,11 +35,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @user = User.find(params[:id])
   end
 
+  def wechat_email(code)
+    @email ||= open_id(code) + "@stickermachine.cool"
+  end
+
   def user_params(code)
     return @user_params if @user_params
     @user_params = set_params
     # GET both openid and session_key
-    @user_params['email'] = 'tbd@stickermachine.cool'
+    @user_params['email'] = wechat_email(code)
     @user_params['password'] = 'secret123'
     @user_params['open_id'] = open_id(code)
     @user_params['encrypted_password'] = Devise.friendly_token
