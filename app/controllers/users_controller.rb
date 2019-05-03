@@ -1,16 +1,20 @@
 class UsersController < ApplicationController
   respond_to :json 
+  # skip_before_action :authenticate_user!, raise: false
+  # skip_before_action :require_login, raise: false
+  
 
   acts_as_token_authentication_handler_for User, except: [ :show, :index, :create ]
 
   before_action :set_user, only: [ :show ]
 
   after_action :verify_authorized, except: [:index, :create]
-  skip_before_action :verify_authenticity_token, :only => :create
+  # skip_before_action :verify_authenticity_token, :only => :create
+  
 
   def create
     code = params[:code]
-    @user = User.find_by_open_id(open_id(code)) || User.create!(user_params(code))
+    @user = User.find_by_open_id(open_id(code).downcase) || User.create!(user_params(code))
     render json: @user
   end
 

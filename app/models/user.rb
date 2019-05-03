@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :stickers
   acts_as_token_authenticatable
   
   # Include default devise modules. Others available are:

@@ -3,12 +3,19 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
+  
+  respond_to :json 
+  acts_as_token_authentication_handler_for User, except: [ :show, :index, :create ]
+  
 
-  skip_before_action :verify_authenticity_token, :only => :create
+  before_action :set_user, only: [ :show ]
+
+  after_action :verify_authorized, except: [:index, :create]
+  # skip_before_action :verify_authenticity_token, :only => :create
 
   def create
     code = params[:code]
-    @user = User.find_by_email(wechat_email(code)) || User.create!(user_params(code))
+    @user = User.find_by_email(wechat_email(code).downcase) || User.create!(user_params(code))
     render json: @user
   end
 

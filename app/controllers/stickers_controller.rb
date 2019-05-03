@@ -1,4 +1,7 @@
 class StickersController < ApplicationController
+  respond_to :json
+  acts_as_token_authentication_handler_for User
+  
   def get_stickers
     # Initialize StickerGetter
     sg = StickerGetter.new()
@@ -23,6 +26,18 @@ class StickersController < ApplicationController
         error: "No stickers"
       }
     end
+  end
+
+  def save_sticker
+    sticker = Sticker.new(sticker_id: params[:sticker_id], url: params[:url], title: params[:title])
+    sticker.user = current_user
+    sticker.save!
+  end
+
+  def get_user_stickers(user_token)
+    @user = User.find_by_email(wechat_email(code))
+    stickers = @user.stickers
+
   end
 
   private
