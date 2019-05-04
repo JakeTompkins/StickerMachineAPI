@@ -1,5 +1,6 @@
 class StickersController < ApplicationController
-  respond_to :json
+  before_action :authenticate_user, only: [:save_sticker]
+  # respond_to :json
   
   def get_stickers
     # Initialize StickerGetter
