@@ -1,5 +1,5 @@
 class StickersController < ApplicationController
-  before_action :authenticate_user, only: [:save_sticker]
+  before_action :authenticate_user, only: [:save_sticker, :get_user_stickers]
   # respond_to :json
   
   def get_stickers
@@ -30,6 +30,8 @@ class StickersController < ApplicationController
 
   def save_sticker
     sticker = Sticker.new(sticker_id: params[:sticker_id], url: params[:url], title: params[:title])
+    puts "here's a user saving a sticker"
+    puts current_user
     sticker.user = current_user
     sticker.save!
   end

@@ -52,9 +52,8 @@ class UsersController < ApplicationController
     email = wechat_email(code)
     # GET both openid and session_key
     @user_params['email'] = email
+    @user_params['password'] = 'impenetetrablepasswordpassword'
     @user_params['open_id'] = email.split('@').first
-    @user_params['password'] = "insecure-password"
-    @user_params['password_digest'] = BCrypt::Password.create(@user_params['password'])
     @user_params
   end
 

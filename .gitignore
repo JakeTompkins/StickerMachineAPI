@@ -24,3 +24,6 @@
 
 # Ignore test gifs
 /app/testgifs
+
+/redis-5.0.4
+redis*
