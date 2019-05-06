@@ -1,7 +1,7 @@
 class Cacher
     def initialize()
         # Initialize Redis class
-        @r = Redis.new(url: ENV["REDIS_URL"])
+        @r = Redis.new(url: 'redis://localhost:6379/1')
     end
 
     def set(parameters)
