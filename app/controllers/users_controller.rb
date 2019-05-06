@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     code = params[:code]
     params = user_params(code)
 
-    @user = User.new(params)
+    @user = User.find_by_email(params["email"].downcase) || User.create!(user_params(code))
     if @user.save!
       render_data(data: @user.as_json)
     else
@@ -46,14 +46,16 @@ class UsersController < ApplicationController
 
   def user_params(code)
 
+    return @user_params if @user_params
     # return @user_params if @user_params
 
     @user_params = {}
     email = wechat_email(code)
+    open_id = email.split('@').first
     # GET both openid and session_key
-    @user_params['email'] = email
-    @user_params['password'] = 'impenetetrablepasswordpassword'
-    @user_params['open_id'] = email.split('@').first
+    @user_params['email'] = email.downcase
+    @user_params['password'] = open_id
+    @user_params['open_id'] = open_id
     @user_params
   end
 
