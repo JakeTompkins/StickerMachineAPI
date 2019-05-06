@@ -1,7 +1,7 @@
 class StickersController < ApplicationController
   before_action :authenticate_user, only: [:save_sticker, :get_user_stickers]
   # respond_to :json
-  
+
   def get_stickers
     # Initialize StickerGetter
     sg = StickerGetter.new()
@@ -36,8 +36,8 @@ class StickersController < ApplicationController
     sticker.save!
   end
 
-  def get_user_stickers(user_token)
-    @user = User.find_by_email(wechat_email(code))
+  def get_user_stickers()
+    @user = current_user
     stickers = @user.stickers
     render_data(stickers)
   end
