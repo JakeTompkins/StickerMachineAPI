@@ -39,7 +39,7 @@ class StickersController < ApplicationController
   def get_user_stickers(user_token)
     @user = User.find_by_email(wechat_email(code))
     stickers = @user.stickers
-
+    render_data(stickers)
   end
 
   private
