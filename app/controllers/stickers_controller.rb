@@ -1,5 +1,5 @@
 class StickersController < ApplicationController
-  before_action :authenticate_user, only: [:save_sticker, :get_user_stickers]
+  before_action :authenticate_user, only: [:save_sticker, :get_user_stickers, :unfavorite_sticker]
   # respond_to :json
 
   def get_stickers
@@ -38,8 +38,13 @@ class StickersController < ApplicationController
 
   def get_user_stickers()
     @user = current_user
-    stickers = @user.stickers
+    stickers = @user.stickers.order(created_at: :desc)
     render_data(stickers)
+  end
+
+  def unfavorite
+    @user = current_user
+    Sticker.destroy(@user.stickers.find_by(sticker_id: params[:sticker]["sticker_id"]))
   end
 
   private

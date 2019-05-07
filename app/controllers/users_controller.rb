@@ -19,11 +19,6 @@ class UsersController < ApplicationController
       @user.errors.each { |error, message| p "#{error}: #{message}" }
       render_error(error: "User could not be saved")
     end
-
-    # code = params[:code]
-    # @user = User.find_by_email(wechat_email(code).downcase) || User.create!(user_params(code))
-
-    # render json: @user
   end
 
   def wechat_email(code)
@@ -58,13 +53,4 @@ class UsersController < ApplicationController
     @user_params['open_id'] = open_id
     @user_params
   end
-
-  # def set_params
-  #   params.require(:user).permit(:email, :password_digest, :open_id)
-  #   params.require(:user).permit(:email, :password, :password_confirmation)
-  # end
-
-  
-
-  
 end
