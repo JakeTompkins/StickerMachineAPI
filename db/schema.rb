@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_05_065302) do
+ActiveRecord::Schema.define(version: 2019_06_05_064027) do
 
   create_table "stickers", force: :cascade do |t|
     t.string "title"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2019_05_05_065302) do
     t.string "open_id"
     t.string "email"
     t.string "password_digest"
+    t.string "avatar_url"
   end
 
 end

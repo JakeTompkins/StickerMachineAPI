@@ -10,9 +10,12 @@ class UsersController < ApplicationController
 
   def register
     code = params[:code]
-    params = user_params(code)
+    avatar_url = params[:avatar_url]
+    puts "here's the avatar url YOUOOUOOUOUOUOUOUOUOU"
+    puts avatar_url
+    params = user_params(code, avatar_url)
 
-    @user = User.find_by_email(params["email"].downcase) || User.create!(user_params(code))
+    @user = User.find_by_email(params["email"].downcase) || User.create!(user_params(code, avatar_url))
     if @user.save!
       render_data(data: @user.as_json)
     else
@@ -39,7 +42,7 @@ class UsersController < ApplicationController
     JSON.parse(response.body)['openid']
   end
 
-  def user_params(code)
+  def user_params(code, avatar_url)
 
     return @user_params if @user_params
     # return @user_params if @user_params
@@ -51,6 +54,7 @@ class UsersController < ApplicationController
     @user_params['email'] = email.downcase
     @user_params['password'] = open_id
     @user_params['open_id'] = open_id
+    @user_params['avatar_url'] = avatar_url
     @user_params
   end
 end
